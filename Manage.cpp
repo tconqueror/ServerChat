@@ -9,6 +9,10 @@ Manage::Manage(CServerChatDlg* p)
 
 Manage::~Manage()
 {
+	for (auto i : vs)
+	{
+		closesocket(i.soc);
+	}
 	closesocket(s);
 	WSACleanup();
 }
@@ -31,7 +35,7 @@ UINT Manage::StartListen(CString s_ip, CString s_port)
 	int port = _ttoi(s_port);
 	CT2A a(s_ip);
 	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = INADDR_ANY;//inet_addr(a);
+	server.sin_addr.s_addr = inet_addr(a);
 	server.sin_port = htons(port);
 	if (bind(s, (struct sockaddr*) & server, sizeof(server)) == SOCKET_ERROR)
 	{
@@ -54,6 +58,7 @@ UINT Manage::StartListen(CString s_ip, CString s_port)
 		dlg->showListClientMsg(cc_ip, cc_port);
 		dlg->ShowMessage(L"Accept connection from " + cc_ip + L":"+cc_port);
 		CWinThread* cTh = AfxBeginThread(Manage::StaticDataFunc, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+		vt.push_back(cTh);
 	}
 	return 0;
 }
@@ -88,6 +93,7 @@ UINT Manage::DataFunction()
 			//more here
 			if (send(i.soc, client_rep, recv_size, 0) < 0)
 			{
+				dlg->ShowMessage(L"Msg to " + ss.ip + L":" + ss.port + L" failed");
 				return -1;
 			}
 		}

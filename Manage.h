@@ -16,5 +16,6 @@ private:
 	UINT DataFunction();
 	std::vector<psa> vs;
 	CString cc_ip, cc_port;
+	std::vector<CWinThread*> vt;
 };
 
