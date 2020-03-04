@@ -32,22 +32,25 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP();
 public:
-	void showListClientMsg(CString,CString);
-	void ShowMessage(CString msg);
+	void CServerChatDlg::ShowMessage(CString inf);
+	void CServerChatDlg::showListClientMsg(CString ip, CString port);
 	void updateList(std::vector<psa>);
 private:
-	void AppendText(CString msg);
 	CListCtrl listClient;
 	CEdit r_ip; 
-	CEdit log;
 	CEdit r_port;
 	bool status = false;
 	bool DlgStart();
 	bool DlgStop();
 	static UINT __cdecl StaticThreadFunction(LPVOID);
-	CWinThread* cTh;
+	CWinThread* cTh;	
 	Manage* pManage;
 	UINT ThreadFunc();
+	std::string DayOfWeek(int);
+	int logCount = 0;
 public:
 	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedOK();
+private:
+	CListCtrl log;
 };

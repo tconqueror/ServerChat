@@ -11,6 +11,7 @@
 #include "framework.h"
 #include <WinSock2.h>
 #include <vector>
+#include <sstream>
 #endif //PCH_H
 typedef struct psa
 {

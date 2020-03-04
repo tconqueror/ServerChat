@@ -13,6 +13,10 @@ Manage::~Manage()
 	{
 		closesocket(i.soc);
 	}
+	for (auto i : vt)
+	{
+		TerminateThread(i->m_hThread, 0);
+	}
 	closesocket(s);
 	WSACleanup();
 }
@@ -86,12 +90,17 @@ UINT Manage::DataFunction()
 	int recv_size;
 	char client_rep[1000] = { 0 };
 	memset(client_rep, 0, sizeof(client_rep));
+	char temp_rep[2000];
+	CString temp = L"["+ss.ip + L":" + ss.port + L"] ";
+	const WCHAR* r_client = (const WCHAR*)temp;
+	memcpy_s(temp_rep, 2000, r_client, 2000);
 	while ((recv_size = recv(ss.soc, client_rep, 998, 0)) != SOCKET_ERROR)
 	{
+		memcpy_s(temp_rep + wcslen(temp) * 2, 2000 - wcslen(temp) * 2, client_rep, 998);
 		for (auto i : vs)
 		{
 			//more here
-			if (send(i.soc, client_rep, recv_size, 0) < 0)
+			if (send(i.soc, temp_rep, recv_size + wcslen(temp) * 2, 0) < 0)
 			{
 				dlg->ShowMessage(L"Msg to " + ss.ip + L":" + ss.port + L" failed");
 				return -1;
